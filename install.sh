@@ -88,6 +88,7 @@ if [[ "$Action" == "Install" ]]; then
 
     # Clone repo
     clone_path="$InstallPath/ttoolbox"
+    
     git clone "$GitRepo" "$clone_path"
 
     script_path="$clone_path/scripts"
