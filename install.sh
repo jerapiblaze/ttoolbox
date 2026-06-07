@@ -87,7 +87,7 @@ if [[ "$Action" == "Install" ]]; then
     echo "Installing the application..."
 
     # Clone repo
-    $clone_path = "$InstallPath/ttoolbox"
+    clone_path="$InstallPath/ttoolbox"
     git clone "$GitRepo" "$clone_path"
 
     script_path="$clone_path/scripts"
