@@ -17,6 +17,7 @@ if (-not $User){
         }
         else {
             Write-Host "❌ The script is NOT running as Administrator. Try to use -User flag." -ForegroundColor Red
+            return 1;
         }
     }
     catch {
@@ -29,9 +30,10 @@ if ($Action -eq "Install") {
     # Install the application
     Write-Host "Installing the application..."
     # Clone the Git repository
-    git clone $GitRepo $InstallPath
+    $clone_path = Join-Path $InstallPath -ChildPath "ttoolbox"
+    git clone $GitRepo $clone_path
     # Add to path
-    $script_path = Join-Path $InstallPath -ChildPath "scripts"
+    $script_path = Join-Path $clone_path -ChildPath "scripts"
     if ($User){
         [Environment]::SetEnvironmentVariable(
             "Path",

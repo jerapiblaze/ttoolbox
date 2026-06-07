@@ -38,6 +38,7 @@ if [[ $UserFlag -eq 0 ]]; then
         echo "✅ The script is running as root."
     else
         echo "❌ The script is NOT running as root. Try using --User flag."
+        return 1;
     fi
 fi
 
@@ -86,9 +87,10 @@ if [[ "$Action" == "Install" ]]; then
     echo "Installing the application..."
 
     # Clone repo
-    git clone "$GitRepo" "$InstallPath"
+    $clone_path = "$InstallPath/ttoolbox"
+    git clone "$GitRepo" "$clone_path"
 
-    script_path="$InstallPath/scripts"
+    script_path="$clone_path/scripts"
 
     chmod +x "$script_path/*"
 
