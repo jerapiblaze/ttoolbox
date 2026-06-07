@@ -3,8 +3,8 @@
 # -----------------------------
 # Parse arguments
 # -----------------------------
-Action=""
-InstallPath=""
+Action="Install"
+InstallPath="/opt"
 UserFlag=0
 
 while [[ $# -gt 0 ]]; do

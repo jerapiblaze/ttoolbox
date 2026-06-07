@@ -1,6 +1,6 @@
 param (
-    [string]$Action,
-    [string]$InstallPath,
+    [string]$Action="install",
+    [string]$InstallPath="C:\",
     [switch]$User
 )
 
