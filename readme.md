@@ -7,11 +7,11 @@ A toolbox for my everyday need.
 Windows:
 
 ```powershell
-
+Invoke-WebRequest "https://raw.githubusercontent.com/jerapiblaze/ttoolbox/refs/heads/main/install.sh" -UseBasicParsing | Select-Object -ExpandProperty Content | iex
 ```
 
 Linux:
 
 ```bash
-
+curl -fsSL "https://raw.githubusercontent.com/jerapiblaze/ttoolbox/refs/heads/main/install.sh" | bash
 ```
