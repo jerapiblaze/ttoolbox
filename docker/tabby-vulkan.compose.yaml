@@ -1,0 +1,26 @@
+services:
+  tabby:
+    build: .
+    container_name: tabby
+    restart: unless-stopped
+
+    ports:
+      - "8864:8080"
+
+    command: >
+      sh -c "
+        ./tabby serve --model Qwen2.5-Coder-3B --chat-model Qwen2.5-Coder-1.5B-Instruct --device vulkan
+      "
+
+    # Intel Xe GPU passthrough
+    devices:
+      - /dev/dri:/dev/dri
+
+    volumes:
+      - ./data:/root/.tabby
+      - /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d:ro
+      - /usr/share/drirc.d:/usr/share/drirc.d:ro
+      - /usr/share/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d:ro
+
+    tmpfs:
+      - /tmp/runtime

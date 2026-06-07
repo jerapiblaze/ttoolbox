@@ -1,0 +1,2 @@
+# Count the number of files in a folder and calculate the progress.
+while true; do clear; echo "ERA5 Download `du -sh \`pwd\`/`"; fc=$((`ls | wc -l`)); echo "`date` ++ files:$fc/30684 days:$((fc/4))/7671 progress: $((fc/4/7671))%"; sleep 5; done
