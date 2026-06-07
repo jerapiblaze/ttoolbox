@@ -47,6 +47,7 @@ if ($Action -eq "Install") {
             "Machine"
         )
     }
+    Write-Output "✅ Done. It is recommended to reload your current session enviromnent."
     return 0;
 } else {
     Write-Host "Invalid action. Please specify either 'Install' or 'Uninstall'.";

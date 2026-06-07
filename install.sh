@@ -106,7 +106,7 @@ if [[ "$Action" == "Install" ]]; then
         add_to_all_system_rc "$script_path"
         echo "Added to system PATH."
     fi
-
+    echo "✅ Done. It is recommended to reload your current session enviromnent."
     exit 0
 else
     echo "Invalid action. Please specify 'Install'."

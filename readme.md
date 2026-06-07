@@ -7,7 +7,7 @@ A toolbox for my everyday need.
 Windows:
 
 ```powershell
-Invoke-WebRequest "https://raw.githubusercontent.com/jerapiblaze/ttoolbox/refs/heads/main/install.ps1" -UseBasicParsing | Select-Object -ExpandProperty Content | iex
+Invoke-WebRequest "https://raw.githubusercontent.com/jerapiblaze/ttoolbox/refs/heads/main/install.ps1" -UseBasicParsing | iex
 ```
 
 Linux:
