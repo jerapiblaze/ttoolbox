@@ -15,9 +15,9 @@ Author: J12Tee | License: CC0
 
 param (
     [Parameter(Mandatory = $false)]
-    [switch]$Help = $false,
+    [string]$Action,
     [Parameter(Mandatory = $false)]
-    [string]$Action
+    [switch]$Help = $false
 )
 
 if ($Help -or $Action -eq "") {

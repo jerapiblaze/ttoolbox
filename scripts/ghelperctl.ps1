@@ -25,15 +25,15 @@ Author: J12Tee | License: CC0
 
 param (
     [Parameter(Mandatory = $false)]
-    [switch]$Help = $false,
-    [Parameter(Mandatory = $false)]
     [string]$FanMode = "Keep",
     [Parameter(Mandatory = $false)]
     [string]$GpuMode = "Keep",
     [Parameter(Mandatory = $false)]
     [switch]$Force = $false,
     [Parameter(Mandatory = $false)]
-    [string]$ConfigFile = ""
+    [string]$ConfigFile = "",
+    [Parameter(Mandatory = $false)]
+    [switch]$Help = $false
 )
 
 if ($Help) {

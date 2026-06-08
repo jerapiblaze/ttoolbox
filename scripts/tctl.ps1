@@ -1,10 +1,10 @@
 param (
     [Parameter(Mandatory = $false)]
-    [switch]$Help,
-    [Parameter(Mandatory = $false)]
     [string]$Action,
     [Parameter(Mandatory = $false)]
-    [int]$Time = 0
+    [int]$Time = 0,
+    [Parameter(Mandatory = $false)]
+    [switch]$Help
 )
 
 if ($Help -or ($Action -eq "")) {
