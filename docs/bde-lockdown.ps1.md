@@ -1,6 +1,8 @@
 # BitlockerDriveEncryption-Lockdown
 
-This script ***immediate*** clear the TPM (which auto unlocks the OS drive on boot), trigger force recovery and reboot.
+This script ***immediate*** clear the TPM (which auto unlocks the OS drive on boot), clear all cached login  credentials, trigger force recovery and reboot.
+
+Inspired from a [Reddit post](https://www.reddit.com/r/sysadmin/comments/p15ugb/remotely_triggering_bitlocker_recovery_screen_to/).
 
 > [!IMPORTANT]
 > You should have ***recovery keys backed up*** before using this script. You can check with [`bde-safetycheck.ps1`](bde-safetycheck.ps1.md) script.
