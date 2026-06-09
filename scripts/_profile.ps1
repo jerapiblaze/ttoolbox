@@ -18,50 +18,35 @@ public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode)
 }
 
 function CanUsePredictionSource {
-    if ([System.Console]::IsOutputRedirected) {
-        return $false
-    }
-
-    if ($Host.UI) {
-        $supportsVT = $Host.UI.PSObject.Properties['SupportsVirtualTerminal'] -and $Host.UI.SupportsVirtualTerminal
-        if ($supportsVT) {
-            return $true
-        }
-    }
-
+    if ([System.Console]::IsOutputRedirected) { return $false }
+    if ($Host.UI -and $Host.UI.SupportsVirtualTerminal) { return $true }
     return (IsVirtualTerminalProcessingEnabled)
 }
 
 if (CanUsePredictionSource) {
-    if (-not (Get-Module -Name PSReadLine)) {
-        Import-Module PSReadLine -ErrorAction SilentlyContinue
-    }
+    Import-Module PSReadLine -ErrorAction SilentlyContinue
+    Import-Module Terminal-Icons -ErrorAction SilentlyContinue
 
-    if ((Get-Module -ListAvailable -Name Terminal-Icons) -and -not (Get-Module -Name Terminal-Icons)) {
-        Import-Module Terminal-Icons -ErrorAction SilentlyContinue
-    }
-
-    Set-PSReadLineOption -PredictionViewStyle ListView -PredictionSource History -HistoryNoDuplicates
-    Set-PSReadLineOption -Colors @{ InlinePrediction = '#9CA3AF' }
+    Set-PSReadLineOption -PredictionViewStyle ListView -PredictionSource History -HistoryNoDuplicates -Colors @{ InlinePrediction = '#9CA3AF'; Parameter = 'Blue'; Operator = 'Red' }
     Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
-    Set-PSReadLineOption -Colors @{ Parameter = 'Blue'; Operator = 'Red' }
 }
 
-# Better conda
-$Env:CONDA_ROOT = Join-Path $HOME 'miniconda3'
-$Env:CONDA_EXE = Join-Path $Env:CONDA_ROOT 'Scripts\conda.exe'
-$Env:_CE_M = ''
-$Env:_CE_CONDA = ''
-$Env:CONDA_ENVS_PATH = Join-Path $HOME '.conda\envs'
-$Env:CONDA_PKGS_DIRS = Join-Path $HOME '.conda\pkgs'
+# Conda setup (lazy-load only if conda exists)
+$condaRoot = Join-Path $HOME 'miniconda3'
+if (Test-Path (Join-Path $condaRoot 'Scripts\conda.exe')) {
+    $Env:CONDA_ROOT = $condaRoot
+    $Env:CONDA_EXE = Join-Path $condaRoot 'Scripts\conda.exe'
+    $Env:_CE_M = ''
+    $Env:_CE_CONDA = ''
+    $Env:CONDA_ENVS_PATH = Join-Path $HOME '.conda\envs'
+    $Env:CONDA_PKGS_DIRS = Join-Path $HOME '.conda\pkgs'
 
-$CondaModulePath = Join-Path $Env:CONDA_ROOT 'shell\condabin\Conda.psm1'
-if (Test-Path $CondaModulePath) {
-    $CondaModuleArgs = @{ ChangePs1 = $True }
-    Import-Module $CondaModulePath -ArgumentList $CondaModuleArgs -ErrorAction SilentlyContinue
-    Remove-Variable CondaModuleArgs -ErrorAction SilentlyContinue
+    $CondaModulePath = Join-Path $condaRoot 'shell\condabin\Conda.psm1'
+    if (Test-Path $CondaModulePath) {
+        Import-Module $CondaModulePath -ArgumentList @{ ChangePs1 = $True } -ErrorAction SilentlyContinue
+    }
 }
 
 # Function to get shortcut details
@@ -135,18 +120,11 @@ function Launch-Application {
 
 # oh-my-posh prompt initialization
 if (-not [System.Console]::IsOutputRedirected -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
-    $themeDir = if ([string]::IsNullOrWhiteSpace($Env:POSH_THEMES_PATH)) {
-        'C:\Program Files\WindowsApps\ohmyposh.cli_29.14.0.0_x64__96v55e8n804z4\themes'
-    }
-    else {
-        $Env:POSH_THEMES_PATH
-    }
-
+    $themeDir = if ([string]::IsNullOrWhiteSpace($Env:POSH_THEMES_PATH)) { 'C:\Program Files\WindowsApps\ohmyposh.cli_29.14.0.0_x64__96v55e8n804z4\themes' } else { $Env:POSH_THEMES_PATH }
     $themeFile = Join-Path $themeDir 'ys.omp.json'
     if (Test-Path $themeFile) {
         oh-my-posh init pwsh --config $themeFile | Invoke-Expression
-    }
-    else {
+    } else {
         oh-my-posh init pwsh | Invoke-Expression
     }
 }
