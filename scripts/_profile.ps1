@@ -1,4 +1,8 @@
-# Autosuggestions
+# Exit early for non-interactive hosts to keep startup fast
+if ($Host.Name -notin 'ConsoleHost','Windows Terminal Host','WindowsTerminalHost','Visual Studio Code Host') {
+    return
+}
+
 function IsVirtualTerminalProcessingEnabled {
     $MethodDefinitions = @'
 [DllImport("kernel32.dll", SetLastError = true)]
@@ -9,48 +13,56 @@ public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode)
     $Kernel32 = Add-Type -MemberDefinition $MethodDefinitions -Name 'Kernel32' -Namespace 'Win32' -PassThru
     $hConsoleHandle = $Kernel32::GetStdHandle(-11) # STD_OUTPUT_HANDLE
     $mode = 0
-    $Kernel32::GetConsoleMode($hConsoleHandle, [ref]$mode) >$null
-    if ($mode -band 0x0004) {
-        # 0x0004 ENABLE_VIRTUAL_TERMINAL_PROCESSING
-        return $true
-    }
-    return $false
+    $Kernel32::GetConsoleMode($hConsoleHandle, [ref]$mode) > $null
+    return ($mode -band 0x0004) -ne 0
 }
 
 function CanUsePredictionSource {
-    return (! [System.Console]::IsOutputRedirected) -and (IsVirtualTerminalProcessingEnabled)
+    if ([System.Console]::IsOutputRedirected) {
+        return $false
+    }
+
+    if ($Host.UI) {
+        $supportsVT = $Host.UI.PSObject.Properties['SupportsVirtualTerminal'] -and $Host.UI.SupportsVirtualTerminal
+        if ($supportsVT) {
+            return $true
+        }
+    }
+
+    return (IsVirtualTerminalProcessingEnabled)
 }
 
-if (CanUsePredictionSource) { 
-    Import-Module -Name Terminal-Icons
-    Import-Module PSReadLine
+if (CanUsePredictionSource) {
+    if (-not (Get-Module -Name PSReadLine)) {
+        Import-Module PSReadLine -ErrorAction SilentlyContinue
+    }
+
+    if ((Get-Module -ListAvailable -Name Terminal-Icons) -and -not (Get-Module -Name Terminal-Icons)) {
+        Import-Module Terminal-Icons -ErrorAction SilentlyContinue
+    }
+
     Set-PSReadLineOption -PredictionViewStyle ListView -PredictionSource History -HistoryNoDuplicates
     Set-PSReadLineOption -Colors @{ InlinePrediction = '#9CA3AF' }
-    # Shows navigable menu of all options when hitting Tab
     Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-    # Autocompletion for arrow keys
     Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
     Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
-    Set-PSReadLineOption -Colors @{
-        #Command = 'Green'
-        Parameter = 'Blue'
-        #Variable = 'Red'
-        Operator  = 'Red'
-    }
+    Set-PSReadLineOption -Colors @{ Parameter = 'Blue'; Operator = 'Red' }
 }
 
 # Better conda
-$Env:CONDA_EXE = "~\miniconda3\Scripts\conda.exe"
-$Env:_CE_M = ""
-$Env:_CE_CONDA = ""
-$Env:_CONDA_ROOT = "~\miniconda3"
-$Env:_CONDA_EXE = "~\miniconda3\Scripts\conda.exe"
-$Env:CONDA_ENVS_PATH = "~\.conda\envs"
-$Env:CONDA_PKGS_DIRS = "~\.conda\pkgs"
-$CondaModuleArgs = @{ChangePs1 = $True; }
-Import-Module "$Env:_CONDA_ROOT\shell\condabin\Conda.psm1" -ArgumentList $CondaModuleArgs
+$Env:CONDA_ROOT = Join-Path $HOME 'miniconda3'
+$Env:CONDA_EXE = Join-Path $Env:CONDA_ROOT 'Scripts\conda.exe'
+$Env:_CE_M = ''
+$Env:_CE_CONDA = ''
+$Env:CONDA_ENVS_PATH = Join-Path $HOME '.conda\envs'
+$Env:CONDA_PKGS_DIRS = Join-Path $HOME '.conda\pkgs'
 
-Remove-Variable CondaModuleArgs
+$CondaModulePath = Join-Path $Env:CONDA_ROOT 'shell\condabin\Conda.psm1'
+if (Test-Path $CondaModulePath) {
+    $CondaModuleArgs = @{ ChangePs1 = $True }
+    Import-Module $CondaModulePath -ArgumentList $CondaModuleArgs -ErrorAction SilentlyContinue
+    Remove-Variable CondaModuleArgs -ErrorAction SilentlyContinue
+}
 
 # Function to get shortcut details
 function Get-ShortcutDetails {
@@ -59,18 +71,14 @@ function Get-ShortcutDetails {
         [string]$ShortcutPath
     )
 
-    # Check if the file exists
     if (-Not (Test-Path -Path $ShortcutPath)) {
         Write-Error "The specified shortcut file does not exist: $ShortcutPath"
         return
     }
 
-    # Create a COM object for the shortcut
     try {
         $Shell = New-Object -ComObject WScript.Shell
         $Shortcut = $Shell.CreateShortcut($ShortcutPath)
-
-        # Display shortcut details
         Write-Output $Shortcut
     }
     catch {
@@ -85,10 +93,10 @@ function Launch-Application {
         [switch]$verbose = $false
     )
 
-    if ($args[0] -ne $null) {
+    if ($null -ne $args[0]) {
         $appItem = get-StartApps -Name $args[0]
-        $appId = Write-Output $appItem | Select AppID -ExpandProperty AppID
-        $appName = Write-Output $appItem | Select Name -ExpandProperty Name
+        $appId = Write-Output $appItem | Select-Object AppID -ExpandProperty AppID
+        $appName = Write-Output $appItem | Select-Object Name -ExpandProperty Name
 
         if ($verbose) {
             Write-Output "AppName        : $($appName)"
@@ -97,13 +105,13 @@ function Launch-Application {
             Write-Output "LaunchParams   : $($args[1..$args.Length])"
         }
 
-        if ($appId -eq $null) {
+        if ($null -eq $appId) {
             Write-Output "Application not found"
             return
         }
 
-        if ($args[1] -eq $null) {
-            Start-Process -FilePath "shell:AppsFolder\$appId" 
+        if ($null -eq $args[1]) {
+            Start-Process -FilePath "shell:AppsFolder\$appId"
         }
         else {
             Start-Process -FilePath "shell:AppsFolder\$appId" $args[1..$args.Length]
@@ -113,21 +121,32 @@ function Launch-Application {
     }
 
     if ($list) {
-        get-StartApps | select Name -ExpandProperty Name
+        get-StartApps | Select-Object -ExpandProperty Name
         return
     }
 
-    Write-Output "Usage: launch.ps1 ApplicationName|[-list]" 
-    Write-Output ""
-    Write-Output "  -list     List all applications found in shell:appsFolder"
-    Write-Output "  -verbose  Verbose logging"
-    Write-Output "  ApplicationName     Launch the application"
-    Write-Output ""
+    Write-Output "Usage: launch.ps1 ApplicationName|[-list]"
+    Write-Output ''
+    Write-Output '  -list     List all applications found in shell:appsFolder'
+    Write-Output '  -verbose  Verbose logging'
+    Write-Output '  ApplicationName     Launch the application'
+    Write-Output ''
 }
 
-# oh-my-posh
-if (! [System.Console]::IsOutputRedirected) {
-    oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\ys.omp.json" | Invoke-Expression;
-}
+# oh-my-posh prompt initialization
+if (-not [System.Console]::IsOutputRedirected -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
+    $themeDir = if ([string]::IsNullOrWhiteSpace($Env:POSH_THEMES_PATH)) {
+        'C:\Program Files\WindowsApps\ohmyposh.cli_29.14.0.0_x64__96v55e8n804z4\themes'
+    }
+    else {
+        $Env:POSH_THEMES_PATH
+    }
 
-clear;
+    $themeFile = Join-Path $themeDir 'ys.omp.json'
+    if (Test-Path $themeFile) {
+        oh-my-posh init pwsh --config $themeFile | Invoke-Expression
+    }
+    else {
+        oh-my-posh init pwsh | Invoke-Expression
+    }
+}
