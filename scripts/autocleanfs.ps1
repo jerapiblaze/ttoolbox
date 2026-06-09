@@ -8,7 +8,7 @@ The path to the folder to clean.
 .PARAMETER CreationTime
 Use CreationTime instead of LastAccessDate (dangerous).
 .PARAMETER Days
-Number of days since last access.
+Number of days. Default: 90.
 .PARAMETER Dry
 Perform a dry run.
 .PARAMETER Force
@@ -28,7 +28,7 @@ param (
     [string]$Path,
 
     [ValidateRange(1, 3650)]
-    [int]$Days = 60,
+    [int]$Days = 90,
 
     [switch]$RemoveFolders,
     [switch]$CreationTime,
