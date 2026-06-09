@@ -21,7 +21,10 @@ if(!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
 Write-Output "Locking down..."
 manage-bde -fr C:
 Initialize-Tpm -AllowClear
-Clear-Tpm
+Clear-Tpm -UsePPI
+
+# Also, clear cached credentials
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v CachedLogonsCount /t REG_SZ /d "0" /f
 
 # Reboot to lock
 Write-Output "Locked. Goodluck with recovery keys ;)"
