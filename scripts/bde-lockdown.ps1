@@ -19,8 +19,9 @@ if(!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::
 
 # Clear TPM and force using recovery keys
 Write-Output "Locking down..."
-Initialize-Tpm -AllowClear
 manage-bde -fr C:
+Initialize-Tpm -AllowClear
+Clear-Tpm
 
 # Reboot to lock
 Write-Output "Locked. Goodluck with recovery keys ;)"
