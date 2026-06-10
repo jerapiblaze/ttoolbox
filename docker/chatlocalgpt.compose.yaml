@@ -1,0 +1,36 @@
+services:
+  openWebUI:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    hostname: openwebui
+    ports:
+      - 8800:8080
+    networks:
+      - ansagpt
+    restart: unless-stopped
+    volumes:
+      - ./data/openwebui-data:/app/backend/data
+    environment:
+      OLLAMA_BASE_URLS: http://ollama:11434
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    hostname: ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: ["gpu"]
+              count: all
+    networks:
+      - ansagpt
+    volumes:
+      - ./data/ollama-data:/root/.ollama
+
+networks:
+  ansagpt:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: chatlocalgpt
