@@ -19,4 +19,6 @@ mkdir -p ./firefox/config
 docker compose up -d
 ```
 
+Access `http://localhost:5800` to get started.
+
 User guide and advanced setups: [documentation](https://github.com/jlesage/docker-firefox).
