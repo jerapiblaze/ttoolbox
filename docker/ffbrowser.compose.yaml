@@ -1,0 +1,21 @@
+networks:
+  browsernet:
+    driver: bridge
+
+services:
+  firefox:
+    image: jlesage/firefox
+    networks:
+      - browsernet
+    ports:
+      - "5800:5800"  # noVNC web access
+    environment:
+      - DISPLAY_WIDTH=1280
+      - DISPLAY_HEIGHT=720
+      - WEB_FILE_MANAGER=1
+      - WEB_AUDIO=1
+    volumes:
+      - /etc/timezone:/etc/timezone
+      - ./firefox/config:/config
+
+    restart: unless-stopped
