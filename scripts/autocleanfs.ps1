@@ -23,8 +23,7 @@ Author: J12Tee | License: CC0
 #>
 
 param (
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
+    [Parameter(Mandatory = $false)]
     [string]$Path,
 
     [ValidateRange(1, 3650)]
@@ -37,7 +36,7 @@ param (
     [switch]$Help
 )
 
-if ($Help) {
+if ($Help -or $Path -eq "") {
     Get-Help $PSCommandPath -Detailed
     return
 }
