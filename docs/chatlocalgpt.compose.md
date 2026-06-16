@@ -11,7 +11,7 @@ mkdir data
 # if NVIDIA GPU is available
 docker compose -f chatlocalgpt.nvidia.compose.yaml up -d
 # else, use iGPU with vulkan
-docker compose -f chatlocalgpt.nvidia.compose.yaml up -d
+docker compose -f chatlocalgpt.vulkan.compose.yaml up -d
 ```
 
 Access OpenWebUI at `http://localhost:8800`, access Ollama API at `http://localhost:11434`.
