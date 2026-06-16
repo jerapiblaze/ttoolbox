@@ -6,6 +6,7 @@ param (
 )
 
 Write-Host "Resync-Time"
+$oldTitle = $Host.UI.RawUI.WindowTitle
 $Host.UI.RawUI.WindowTitle = "ReSync-Time - NTP: $NTPServer"
 
 try {
@@ -34,4 +35,7 @@ try {
 }
 catch {
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+}
+finally {
+    $Host.UI.RawUI.WindowTitle = $oldTitle
 }

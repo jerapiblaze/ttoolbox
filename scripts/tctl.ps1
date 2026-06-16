@@ -13,6 +13,7 @@ if ($Help -or ($Action -eq "")) {
 }
 
 Write-Output "TeeCtl"
+$oldTitle = $Host.UI.RawUI.WindowTitle
 $Host.UI.RawUI.WindowTitle = "TeeCtl - $Action"
 
 Function Start-SleepPrompt {
@@ -71,24 +72,32 @@ function Set-MoveMode {
     psshutdown -d -t 0;
 }
 
-switch ($Action) {
-    "dim" {
-        Set-DimMode;
-        break;
+try {
+    switch ($Action) {
+        "dim" {
+            Set-DimMode;
+            break;
+        }
+        "sleep" {
+            Set-SleepMode;
+            break;
+        }
+        "awake" {
+            Set-AwakeMode;
+            break;
+        }
+        "move" {
+            Set-MoveMode;
+            break;
+        }
+        Default {
+            throw "Action $Action is not defined."
+        }
     }
-    "sleep" {
-        Set-SleepMode;
-        break;
-    }
-    "awake" {
-        Set-AwakeMode;
-        break;
-    }
-    "move" {
-        Set-MoveMode;
-        break;
-    }
-    Default {
-        throw "Action $Action is not defined."
-    }
+}
+catch {
+    Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+}
+finally {
+    $Host.UI.RawUI.WindowTitle = $oldTitle
 }
