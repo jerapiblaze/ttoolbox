@@ -17,6 +17,8 @@ services:
     image: ollama/ollama:latest
     container_name: ollama
     hostname: ollama
+    ports:
+      - 11434:11434
     environment:
       - OLLAMA_IGPU_ENABLE=1
       - XDG_RUNTIME_DIR=/tmp/runtime
