@@ -17,20 +17,26 @@ services:
     image: ollama/ollama:latest
     container_name: ollama
     hostname: ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              capabilities: ["gpu"]
-              count: all
+    environment:
+      - OLLAMA_IGPU_ENABLE=1
+      - XDG_RUNTIME_DIR=/tmp/runtime
+      - OLLAMA_NUM_GPU=1
+      - OLLAMA_GPU_LAYER=all
+      - OLLAMA_VULKAN=1
+    tmpfs:
+      - /tmp/runtime
+    devices:
+      - /dev/dri:/dev/dri
     networks:
-      - ansagpt
+      - chatlocalgpt
     volumes:
       - ./data/ollama-data:/root/.ollama
+      - /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d:ro
+      - /usr/share/drirc.d:/usr/share/drirc.d:ro
+      - /usr/share/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d:ro
 
 networks:
-  ansagpt:
+  chatlocalgpt:
     driver: bridge
     driver_opts:
       com.docker.network.bridge.name: chatlocalgpt
