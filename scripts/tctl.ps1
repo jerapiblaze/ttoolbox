@@ -13,6 +13,7 @@ if ($Help -or ($Action -eq "")) {
 }
 
 Write-Output "TeeCtl"
+$Host.UI.RawUI.WindowTitle = "TeeCtl - $Action"
 
 Function Start-SleepPrompt {
     param(
