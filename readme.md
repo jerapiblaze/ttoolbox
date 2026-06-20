@@ -18,7 +18,11 @@ curl -fsSL "https://raw.githubusercontent.com/jerapiblaze/ttoolbox/refs/heads/ma
 
 ## Update
 
-Just use `git pull` to get latest updates.
+Just use `git pull` to get latest updates. For automatic update, add the following line into your crontab.
+
+```text
+0 0 * * * cd /opt/ttoolbox && git fetch origin && git reset --hard origin/main
+```
 
 ## Disclaimer
 
