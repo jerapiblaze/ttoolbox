@@ -93,7 +93,7 @@ if [[ "$Action" == "Install" ]]; then
 
     script_path="$clone_path/scripts"
 
-    chmod +x "$script_path/*"
+    chmod +x $script_path/*
 
     # -----------------------------
     # Add to PATH
