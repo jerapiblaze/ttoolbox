@@ -32,6 +32,7 @@ if ($Action -eq "Install") {
     # Clone the Git repository
     $clone_path = Join-Path $InstallPath -ChildPath "ttoolbox"
     git clone $GitRepo $clone_path
+    git config --global --add safe.directory $clone_path
     # Add to path
     $script_path = Join-Path $clone_path -ChildPath "scripts"
     if ($User){

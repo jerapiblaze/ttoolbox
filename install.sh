@@ -94,6 +94,7 @@ if [[ "$Action" == "Install" ]]; then
     script_path="$clone_path/scripts"
 
     chmod +x $script_path/*
+    git config --global --add safe.directory /opt/ttoolbox
 
     # -----------------------------
     # Add to PATH
