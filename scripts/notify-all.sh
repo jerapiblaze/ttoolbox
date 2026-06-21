@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#!/usr/bin/env zsh
 # notify-send-all
 
 PATH=/usr/bin:/bin

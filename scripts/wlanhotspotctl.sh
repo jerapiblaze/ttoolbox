@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 echo "########################################"
 echo "#                                      #"

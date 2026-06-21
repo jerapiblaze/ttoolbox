@@ -1,5 +1,5 @@
-#/bin/bash
-#/bin/zsh
+#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 ts=$(date -u)
 cs=$(nmcli -t -f CONNECTIVITY general 2>/dev/null)
