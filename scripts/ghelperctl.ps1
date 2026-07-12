@@ -29,6 +29,8 @@ param (
     [Parameter(Mandatory = $false)]
     [string]$GpuMode = "Keep",
     [Parameter(Mandatory = $false)]
+    [string]$KbLed = "Keep",
+    [Parameter(Mandatory = $false)]
     [switch]$Force = $false,
     [Parameter(Mandatory = $false)]
     [string]$ConfigFile = "",
@@ -104,6 +106,40 @@ switch ($GpuMode) {
     }
 }
 
+switch ($KbLed) {
+    "Keep" { 
+        $KbLed = -1;
+        break;
+    }
+    "Off" { 
+        $KbLed = 0;
+        break;
+    }
+    "Low" { 
+        $KbLed = 1;
+        break;
+    }
+    "Medium" { 
+        $KbLed = 2;
+        break;
+    }
+    "High" { 
+        $KbLed = 3;
+        break;
+    }
+    Default {
+        try {
+            $KbLed = [int16]$KbLed;
+        }
+        catch [System.Exception] {
+            throw "Invalid KbLed value of $KbLed!";
+        }
+        if ($KbLed -notin @(-1, 0, 1, 2, 3)) {
+            throw "KbLed $KbLed is not found in GHelper!";
+        }
+    }
+}
+
 function Edit-GHelperConfig {
     if ($ConfigFile -eq "") {
         $ConfigFile = Join-Path $env:APPDATA -ChildPath "GHelper/config.json";
@@ -140,6 +176,10 @@ function Edit-GHelperConfig {
         #         break;
         #     }
         # }
+    }
+    if ($KbLed -ne -1) {
+        Write-Output "💡 Setting KbLed=$KbLed.";
+        $config.keyboard_brightness = $KbLed;
     }
     $config | ConvertTo-Json | Set-Content -Path $ConfigFile;
 }

@@ -53,18 +53,19 @@ if ($Time -gt 0) {
 }
 
 function Set-DimMode {
-    ghelperctl -FanMode silent;
+    ghelperctl -FanMode silent -KbLed 1;
     awakectl -Action stop;
 }
 
 function Set-SleepMode {
-    Set-DimMode;
+    ghelperctl -FanMode silent -KbLed 0;
+    awakectl -Action stop;
     Start-SleepPrompt 60 "Delaying to provide G-Helper time to start. Hit anykey to skip waiting." -AllowInterrupt
     psshutdown -x -t 0;
 }
 
 function Set-AwakeMode {
-    ghelperctl -FanMode balanced;
+    ghelperctl -FanMode balanced -KbLed 3;
     awakectl -Action start;
 }
 
