@@ -1,6 +1,6 @@
-#!/bin/bash
-#!/bin/zsh
-#!/bin/sh
+#!/usr/bin/bash
+#!/usr/bin/zsh
+#!/usr/bin/sh
 
 if [ "$1" == "--install" ]; then
 	if [ "$(id -u)" -ne 0 ]; then
