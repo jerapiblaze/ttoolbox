@@ -17,9 +17,9 @@ if [ "$1" == "--install" ]; then
 	    libnss3-dev libnspr4-dev libglib2.0-dev
 	git clone "https://tangled.org/janantos.tngl.sh/brow6el" /tmp/brow6el
 	cd /tmp/brow6el
-        ./download_cef.sh
+    ./download_cef.sh
 	./build.sh
-        cp -r build /opt/brow6el
+    cp -r build /opt/brow6el
 	rm -rf /tmp/brow6el
 	echo "--> Brow6el Install: Done."
 	exit;
