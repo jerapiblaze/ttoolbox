@@ -24,8 +24,16 @@ if [ "$1" == "--install" ]; then
 	echo "--> Brow6el Install: Done."
 	exit;
 fi
+if [ "$1" == "--docker" ]; then
+	docker run --rm -it jerapiblannett/brow6el:latest
+	exit;
+fi
 if [ -d "/opt/brow6el" ]; then
 	cd /opt/brow6el && ./run_brow6el.sh $@
+	exit;
 else
-	echo "Brow6el is not installed. Use this script with --install command!"
+	echo "Brow6el is not installed. Using Docker image!"
+	docker run --rm -it jerapiblannett/brow6el:latest
+	echo "HINT: You can install Brow6el by running this script with the --install option."
+	exit;
 fi
