@@ -19,7 +19,7 @@ if [ "$1" == "--install" ]; then
 	cd /tmp/brow6el
     ./download_cef.sh
 	./build.sh
-    cp -r build /opt/brow6el
+    cp -r build/ /opt/brow6el
 	rm -rf /tmp/brow6el
 	echo "--> Brow6el Install: Done."
 	exit;
