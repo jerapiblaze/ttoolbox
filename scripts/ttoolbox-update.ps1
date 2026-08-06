@@ -1,5 +1,5 @@
 # update ttoolbox
 
 Set-Location C:\ttoolbox;
-git fetch origin;
+git fetch --depth=1 origin;
 if ($?) { git reset --hard origin/main; }

@@ -90,12 +90,12 @@ if [[ "$Action" == "Install" ]]; then
     # Clone repo
     clone_path="$InstallPath/ttoolbox"
     
-    git clone "$GitRepo" "$clone_path"
+    git clone --depth 1 "$GitRepo" "$clone_path"
 
     script_path="$clone_path/scripts"
 
     chmod +x $script_path/*
-    git config --global --add safe.directory /opt/ttoolbox
+    git config --global --add safe.directory "$clone_path"
 
     # -----------------------------
     # Add to PATH

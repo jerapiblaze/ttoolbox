@@ -31,7 +31,7 @@ if ($Action -eq "Install") {
     Write-Host "Installing the application..."
     # Clone the Git repository
     $clone_path = Join-Path $InstallPath -ChildPath "ttoolbox"
-    git clone $GitRepo $clone_path
+    git clone --depth 1 $GitRepo $clone_path
     git config --global --add safe.directory $clone_path
     # Add to path
     $script_path = Join-Path $clone_path -ChildPath "scripts"
