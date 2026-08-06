@@ -14,7 +14,7 @@ if [ "$1" == "--install" ]; then
 	    libx11-dev libxcomposite-dev libxdamage-dev libxext-dev libxfixes-dev \
 	    libxrandr-dev libgbm-dev libxcb1-dev \
 	    libpango1.0-dev libatk1.0-dev libcups2-dev libasound2-dev \
-	    libnss3-dev libnspr4-dev libglib2.0-dev \
+	    libnss3-dev libnspr4-dev libglib2.0-dev
 	git clone "https://tangled.org/janantos.tngl.sh/brow6el" /tmp/brow6el
 	cd /tmp/brow6el
     ./download_cef.sh
