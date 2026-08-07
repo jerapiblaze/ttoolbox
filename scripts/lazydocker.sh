@@ -2,7 +2,7 @@
 #!/usr/bin/zsh
 #!/usr/bin/sh
 
-COMPOSE_FILE="../docker/lazydocker.compose.yaml"
+COMPOSE_FILE="/opt/ttoolbox/docker/lazydocker.compose.yaml"
 if [ "$1" == "--build" ]; then
     docker compose -f "$COMPOSE_FILE" build
     exit;
