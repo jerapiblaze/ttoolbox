@@ -18,7 +18,7 @@ else
     echo "Running lazydocker as non-root user. Using $HOME/.config/lazydocker for config."
     cp /opt/ttoolbox/docker/lazydocker.compose.yaml /tmp/lazydocker.compose.yaml
     sed -i "s|/root/lazydocker/config|$HOME/.config/lazydocker|g" /tmp/lazydocker.compose.yaml
-    if [ !-d "$HOME/.config/lazydocker" ]; then
+    if [ ! -d "$HOME/.config/lazydocker" ]; then
         mkdir -p "$HOME/.config/lazydocker"
     fi
     docker compose -f /tmp/lazydocker.compose.yaml up -d && docker attach lazydocker && docker compose -f /tmp/lazydocker.compose.yaml down
