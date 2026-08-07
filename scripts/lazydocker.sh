@@ -7,6 +7,7 @@ if [ "$1" == "--build" ]; then
     docker compose -f "$COMPOSE_FILE" build
     exit;
 fi
+echo "Alternatively, use \`d4s\` for better experience."
 if [ "$(id -u)" -eq 0 ]; then
     echo "Running lazydocker as root user. Using /root/lazydocker/config for config."
     if [ ! -d "/root/lazydocker/config" ]; then
