@@ -1,6 +1,8 @@
 param (
     [Parameter(Mandatory = $false)]
     [string]$Action,
+    [parameter(Mandatory = $false)]
+    [switch]$PreservePowerMode,
     [Parameter(Mandatory = $false)]
     [int]$Time = 0,
     [Parameter(Mandatory = $false)]
@@ -53,19 +55,31 @@ if ($Time -gt 0) {
 }
 
 function Set-DimMode {
-    ghelperctl -FanMode silent -KbLed 1;
+    if ($PreservePowerMode) {
+        ghelperctl -FanMode keep -KbLed 1;
+    } else {
+        ghelperctl -FanMode silent -KbLed 1;
+    }
     awakectl -Action stop;
 }
 
 function Set-SleepMode {
-    ghelperctl -FanMode silent -KbLed 0;
+    if ($PreservePowerMode) {
+        ghelperctl -FanMode keep -KbLed 0;
+    } else {
+        ghelperctl -FanMode silent -KbLed 0;
+    }
     awakectl -Action stop;
     Start-SleepPrompt 60 "Delaying to provide G-Helper time to start. Hit anykey to skip waiting." -AllowInterrupt
     psshutdown -x -t 0;
 }
 
 function Set-AwakeMode {
-    ghelperctl -FanMode balanced -KbLed 3;
+    if ($PreservePowerMode) {
+        ghelperctl -FanMode keep -KbLed 3;
+    } else {
+        ghelperctl -FanMode balanced -KbLed 3;
+    }
     awakectl -Action start;
 }
 

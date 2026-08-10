@@ -215,7 +215,7 @@ function Restart-GHelper {
     Write-Output "✅ Done.";
 }
 
-if ($FanMode -eq -1 -and $GpuMode -eq -1) {
+if ($FanMode -eq -1 -and $GpuMode -eq -1 -and $KbLed -eq -1) {
     Write-Output "Nothing changes.";
     if ($Force) {
         Restart-GHelper;
