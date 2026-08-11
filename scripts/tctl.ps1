@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+    Control various power and system modes.
+
+.DESCRIPTION
+    This script allows you to set different system modes such as dim, sleep, awake, and move.
+
+.PARAMETER Action
+    The action to perform. Valid options are "dim", "sleep", "awake", "move".
+
+.PARAMETER PreservePowerMode
+    If specified, preserves the current power mode when changing system modes.
+
+.PARAMETER Time
+    The delay time in seconds before performing the action.
+
+.PARAMETER Help
+    Displays this help message.
+#>
 param (
     [Parameter(Mandatory = $false)]
     [string]$Action,
@@ -10,7 +29,7 @@ param (
 )
 
 if ($Help -or ($Action -eq "")) {
-    Get-Help teectl.ps1 -Detailed
+    Get-Help tctl.ps1 -Detailed
     return;
 }
 

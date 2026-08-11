@@ -1,4 +1,10 @@
-# Get pagefile information
+<#
+.SYNOPSIS
+    Get pagefile information.
+
+.DESCRIPTION
+    This script retrieves information about the system pagefile(s) including filename, size, current usage, and peak usage.
+#>
 
 $pf = Get-CimInstance Win32_PageFileUsage
 

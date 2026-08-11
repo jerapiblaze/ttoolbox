@@ -1,3 +1,10 @@
+<#
+.SYNOPSIS
+    Bitlocker manual-trigger for emergency lockdown.
+
+.DESCRIPTION
+    This script triggers an emergency lockdown using Bitlocker, clearing the TPM and forcing the use of recovery keys.
+#>
 # Bitlocker manual-trigger
 Write-Output "==== [Emergengy Lockdown] (Powered by Bitlocker) ===="
 

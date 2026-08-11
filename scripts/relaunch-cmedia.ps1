@@ -1,3 +1,10 @@
+<#
+.SYNOPSIS
+    Restart the C-Media Audio Control Panel.
+
+.DESCRIPTION
+    This script stops the currently running C-Media Audio Control Panel process and starts a new instance.
+#>
 Write-Output "C-Media Restart"
 $process = Get-Process "cmediaaudiocontrolpanel"
 $process_id = $process.Id

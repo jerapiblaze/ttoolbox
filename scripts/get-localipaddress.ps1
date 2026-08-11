@@ -1,4 +1,10 @@
-# This script retrieves and displays the local IP address of all interfaces on the machine in a pretty format.
+<#
+.SYNOPSIS
+    Get the local IP address of all network interfaces.
+
+.DESCRIPTION
+    This script retrieves and displays the local IP address of all interfaces on the machine in a pretty format.
+#>
 param (
     [Parameter(Mandatory = $false)]
     [switch]$Help = $false,

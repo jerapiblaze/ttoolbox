@@ -1,4 +1,25 @@
-# This script moves a WSL distro to a new location by exporting it to a tar file, unregistering it, and then importing it at the new location.
+<#
+.SYNOPSIS
+    Move a WSL distro to a new location.
+
+.DESCRIPTION
+    This script moves a WSL distro to a new location by exporting it to a tar file, unregistering it, and then importing it at the new location.
+
+.PARAMETER Distro
+    The name of the WSL distro to move.
+
+.PARAMETER TargetFolder
+    The target folder where the WSL distro will be moved.
+
+.PARAMETER DryRun
+    If specified, the script will only display the actions that would be performed without actually moving the distro.
+
+.PARAMETER Help
+    Displays this help message.
+
+.PARAMETER Force
+    If specified, skips confirmation prompts.
+#>
 param(
     [Parameter(Mandatory = $false)]
     [string]$Distro = "",

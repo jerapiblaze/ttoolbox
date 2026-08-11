@@ -1,4 +1,16 @@
-# This script regenerates native images for all loaded assemblies using NGEN (Native Image Generator).
+<#
+.SYNOPSIS
+    Regenerate native images for loaded assemblies using NGEN (Native Image Generator).
+
+.DESCRIPTION
+    This script enumerates all currently loaded assemblies and uses NGEN to generate native images for them.
+
+.PARAMETER AsmSet
+    Specifies which assemblies to process. Valid values are "System", "User", "All".
+
+.PARAMETER DryRun
+    If specified, the script will only display the assemblies that would be processed without actually invoking NGEN.
+#>
 param(
     [Parameter(Mandatory = $false)][ValidateSet("System", "User", "All", "")]
     [string]$AsmSet = "",

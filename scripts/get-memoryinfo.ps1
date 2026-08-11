@@ -1,3 +1,10 @@
+<#
+.SYNOPSIS
+    Get memory information.
+
+.DESCRIPTION
+    This script retrieves information about the system memory, including total, used, free, shared, buffer/cache, and available memory, as well as swap usage.
+#>
 param(
     [ValidateSet("k", "m", "g", "human")]
     [string]$unit = "m",

@@ -1,4 +1,13 @@
-# Force a time resynchronization in Windows using PowerShell
+<#
+.SYNOPSIS
+    Force a time resynchronization in Windows using PowerShell.
+
+.DESCRIPTION
+    This script forces a time resynchronization with a specified NTP server.
+
+.PARAMETER NTPServer
+    The NTP server to synchronize with. Default is "time.nist.gov".
+#>
 
 param (
     [Parameter(Mandatory = $false)]

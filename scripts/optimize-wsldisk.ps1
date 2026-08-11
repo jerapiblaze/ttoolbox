@@ -1,4 +1,25 @@
-# This script optimizes the WSL disk(s) for a specified distro or all distros.
+<#
+.SYNOPSIS
+    Optimize the WSL disk(s) for a specified distro or all distros.
+
+.DESCRIPTION
+    This script optimizes the WSL disk(s) for a specified distro or all distros by compacting the ext4.vhdx file.
+
+.PARAMETER Distro
+    The name of the WSL distro to optimize. Use -All to optimize all distros.
+
+.PARAMETER DryRun
+    If specified, the script will only display the actions that would be performed without actually optimizing the disks.
+
+.PARAMETER Help
+    Displays this help message.
+
+.PARAMETER All
+    If specified, optimizes all WSL distros.
+
+.PARAMETER Force
+    If specified, skips confirmation prompts.
+#>
 param(
     [Parameter(Mandatory = $false)]
     [switch]$DryRun = $false,

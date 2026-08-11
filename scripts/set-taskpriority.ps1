@@ -1,5 +1,18 @@
 # Change the priority of a scheduled task
 # Reference: https://stackoverflow.com/questions/47197821/how-to-change-default-scheduled-task-process-priority-in-windows
+<#
+.SYNOPSIS
+    Change the priority of a scheduled task.
+
+.DESCRIPTION
+    This script allows you to change the priority of a specified scheduled task.
+
+.PARAMETER TaskName
+    The name of the scheduled task.
+
+.PARAMETER Priority
+    The new priority for the task. Valid values are 0 (Deadline), 1 (Real Time), 2 (High), 3 (Above Normal), 4 (Normal), 5 (Below Normal), 6 (Low), 7 (Background).
+#>
 param (
     [Parameter(Mandatory = $false)]
     [string]$TaskName = "",
