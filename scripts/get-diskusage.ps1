@@ -5,7 +5,8 @@
 .DESCRIPTION
     This script scans specified directories, calculates the sizes of each folder, 
     and generates a detailed report sorted by size. The report can be displayed in 
-    the console or exported to a CSV file.
+    the console or exported to a CSV file. To use with other scripts, import the csv
+    file and use the data as needed, since the script does not support piping the output to other scripts.
 
 .NOTES
     Author: Emanuele Bartolesi
@@ -18,14 +19,11 @@
 .PARAMETER ExportPath
     The path to save the report as a CSV file. Optional.
 
-.PARAMETER MinSize
-    Minimum size (in MB) to include in the report. Defaults to 0 MB.
-
 .EXAMPLE
     ./DiskUsageAnalyzer.ps1 -Directory "C:\Users\YourName\Documents"
 
 .EXAMPLE
-    ./DiskUsageAnalyzer.ps1 -Directory "C:\Users" -ExportPath "C:\Reports\DiskUsageReport.csv" -MinSize 10
+    ./DiskUsageAnalyzer.ps1 -Directory "C:\Users" -ExportPath "C:\Reports\DiskUsageReport.csv"
 #>
 
 [CmdletBinding()]
@@ -40,7 +38,7 @@ param (
     [switch]$SummaryOnly,
 
     [Parameter(Mandatory = $false)]
-    [int]$MinSize = 0,
+    [switch]$HumanReadable,
 
     [Parameter(Mandatory = $false)]
     [switch]$Help = $false
@@ -55,14 +53,36 @@ if ($Directory -eq "") {
     $Directory = Get-Location
 }
 
-# Function to calculate folder size
-function Get-FolderSize {
+function Get-ItemSize {
     param (
-        [string]$FolderPath
+        [string]$ItemPath,
+        [switch]$HumanReadable
     )
-    $Size = (Get-ChildItem -Path $FolderPath -Recurse -ErrorAction SilentlyContinue |
-        Measure-Object -Property Length -Sum).Sum
-    return [math]::Round($Size / 1MB, 2) # Convert to MB
+
+    # Resolve the item
+    $item = Get-Item -LiteralPath $ItemPath -Force -ErrorAction Stop
+
+    # Compute size
+    if ($item.PSIsContainer) {
+        # Folder → sum all child file sizes
+        $Size = (Get-ChildItem -LiteralPath $ItemPath -Recurse -Force -File -ErrorAction SilentlyContinue |
+            Measure-Object -Property Length -Sum).Sum
+    }
+    else {
+        # File → direct length
+        $Size = $item.Length
+    }
+
+    if ($HumanReadable) {
+        switch ($Size) {
+            { $_ -ge 1GB } { return "{0:N2} GB" -f ($Size / 1GB) }
+            { $_ -ge 1MB } { return "{0:N2} MB" -f ($Size / 1MB) }
+            { $_ -ge 1KB } { return "{0:N2} KB" -f ($Size / 1KB) }
+            default { return "$Size B " }
+        }
+    }
+
+    return $Size
 }
 
 # Main script execution
@@ -72,39 +92,42 @@ try {
         throw "The specified directory does not exist: $Directory"
     }
 
-    $Folders = Get-ChildItem -Path $Directory -Directory -Force | ForEach-Object {
-        $Size = Get-FolderSize -FolderPath $_.FullName
-        [PSCustomObject]@{
-            Folder    = $_.FullName
-            SizeInMB  = $Size
-            ItemCount = (Get-ChildItem -Path $_.FullName -Recurse -ErrorAction SilentlyContinue | Measure-Object).Count
+    $ItemSizes = @()
+    $ItemSizes += [PSCustomObject]@{
+        Name = "Total"
+        Path = $Directory
+        Size = "{0,12}" -f (Get-ItemSize -ItemPath $Directory -HumanReadable:$HumanReadable)
+    }
+    $Items = Get-ChildItem -Path $Directory -Force -ErrorAction SilentlyContinue
+    # if ($Recurse) {
+    #     $Items = Get-ChildItem -Path $Directory -Force -Recurse -ErrorAction SilentlyContinue
+    # }
+    foreach ($Item in $Items) {
+        $Size = Get-ItemSize -ItemPath $Item.FullName -HumanReadable:$HumanReadable
+        $ItemSizes += [PSCustomObject]@{
+            Name = $Item.Name
+            Path = $Item.FullName
+            Size = "{0,12}" -f $Size
         }
     }
 
-    # Filter by minimum size
-    $FilteredFolders = $Folders | Where-Object { $_.SizeInMB -ge $MinSize } | Sort-Object -Property SizeInMB -Descending
-    $Summary = [PSCustomObject]@{
-        Folder      = $Directory
-        SizeInMB    = ($FilteredFolders | Measure-Object -Property SizeInMB -Sum).Sum
-        ItemCount   = $FilteredFolders.Count
-    }
     # Display results
     Write-Host "Disk Usage Report:" -ForegroundColor Green
     if ($SummaryOnly) {
-        $Summary | Format-Table -AutoSize
+        $Results = $ItemSizes[0]
+        $Results | Format-Table Path, Size -AutoSize
     } else {
-        # add summary row at the top
-        $Results = @($Summary) + $FilteredFolders
-        $Results | Format-Table -AutoSize
+        $Results = $ItemSizes
+        # align size column  at space (xx GB) or (xx MB) or (xx KB) or (xx Bytes)
+        $Results | Format-Table Path, Size -AutoSize
     }
 
     # Export results if needed
     if ($ExportPath) {
         Write-Host "Exporting report to: $ExportPath" -ForegroundColor Yellow
-        $FilteredFolders | Export-Csv -Path $ExportPath -NoTypeInformation -Encoding UTF8
+        $Results | Export-Csv -Path $ExportPath -NoTypeInformation -Encoding UTF8
         Write-Host "Report exported successfully!" -ForegroundColor Green
     }
-
 }
 catch {
     Write-Warning "An error occurred: $_"
