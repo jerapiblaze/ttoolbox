@@ -98,6 +98,8 @@ compact vdisk
 detach vdisk
 "@
     $diskpartScript | diskpart > null
+    # Optimize using Optimize-VHD
+    Optimize-VHD -Path $wslDiskPath -Mode Full
     # Size of the WSL disk before optimization
     $sizeBefore = (Get-Item $wslDiskPath).Length
     $sizeAfter = (Get-Item $wslDiskPath).Length
