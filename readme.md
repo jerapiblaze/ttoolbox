@@ -18,10 +18,14 @@ curl -fsSL "https://raw.githubusercontent.com/jerapiblaze/ttoolbox/refs/heads/ma
 
 ## Update
 
-Just use `git` to get latest updates. Remember to add execute permissions to the scripts. For automatic updates, add the following line into your crontab.
+Just use `git` to get latest updates. Remember to add execute permissions to the scripts. For automatic updates (fetch, merge, clean up and file permission handling), use the included update scripts.
 
-```text
-0 0 * * * cd /opt/ttoolbox/scripts/ttoolbox-update.sh
+```bash
+ttoolbox-update.sh
+```
+
+```powershell
+ttoolbox-update.ps1
 ```
 
 ## Disclaimer
