@@ -34,7 +34,7 @@ param(
 )
 
 if ($Action -eq ""){
-    Get-Help set-delayedpoweraction.ps1 -Detailed;
+    Get-Help powerctl.ps1 -Detailed;
     exit
 }
 
