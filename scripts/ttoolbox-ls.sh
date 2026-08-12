@@ -32,6 +32,11 @@ while [[ $# -gt 0 ]]; do
 	shift
 done
 
+# Get the current script dir
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ttoolbox_dir="$(cd "$script_dir/.." && pwd)"
+cd "$ttoolbox_dir" || exit 1
+
 if [[ $shrink -eq 0 ]]; then
 	printf '\033[35m  _    _                 _  _                  \033[0m\n' # Magenta
 	printf '\033[33m | |_ | |_  ___    ___  | || |__    ___ __  __ \033[0m\n' # Yellow
@@ -39,8 +44,6 @@ if [[ $shrink -eq 0 ]]; then
 	printf '\033[32m | |_ | |_| (_) || (_) || || |_) || (_) |>  <  \033[0m\n' # Green
 	printf '\033[34m  \\__| \\__|\\___/  \\___/ |_||_.__/  \\___//_/\\_\\ \033[0m\n' # Blue
 	printf '                                               \n'
-	printf 'ttoolbox-ls.sh - Version: %s\n' "$version"
-	printf 'Made with <3 by @jerapiblaze\n'
 	printf '|'
 	printf '\033[41m   \033[0m'
 	printf '\033[42m   \033[0m'
@@ -51,9 +54,10 @@ if [[ $shrink -eq 0 ]]; then
 	printf '\033[47m   \033[0m'
 	printf '\033[100m   \033[0m'
 	printf '\033[40m   \033[0m'
-	printf '|\n\n'
+	printf '|\n'
 fi
-
+printf '\033[36mttoolbox - Made with <3 by @jerapiblaze\033[0m\n'
+printf '\033[36mDir: %s - Ver.%s\033[0m\n' "$ttoolbox_dir" "$version"
 printf -- '----\n'
 
 if [[ $help -eq 1 ]]; then

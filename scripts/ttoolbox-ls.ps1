@@ -15,7 +15,7 @@
     Include YAML manifest files (*.yaml).
 
 .PARAMETER Shrink
-    Hide the ASCII art and version information, showing only the list of files.
+    Hide the ASCII art, showing only the list of files.
 
 .PARAMETER All
     Include all files (*.ps1, *.sh, *.yaml, *.md).
@@ -37,32 +37,35 @@ param(
     [switch]$Help
 )
 
+# Get the script location
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$ttoolboxDir = Split-Path -Parent $scriptDir
+Set-Location -Path $ttoolboxDir
+# Version information from git
 $Version = $(git log -1 --pretty=format:"%h [%cr]")
+
 if (-not $Shrink) {
+    # ASCII art and color-test
     Write-Host "  _    _                 _  _                  " -ForegroundColor Magenta
     Write-Host " | |_ | |_  ___    ___  | || |__    ___ __  __ " -ForegroundColor Yellow
     Write-Host " | __|| __|/ _ \  / _ \ | || '_ \  / _ \\ \/ / " -ForegroundColor Red
     Write-Host " | |_ | |_| (_) || (_) || || |_) || (_) |>  <  " -ForegroundColor Green
     Write-Host "  \__| \__|\___/  \___/ |_||_.__/  \___//_/\_\ " -ForegroundColor Blue
-    Write-Host "                                               " -ForegroundColor Cyan
-}
-if (-not $Shrink) {
-    Write-Host "ttoolbox-ls.ps1 - Version: $Version" -ForegroundColor Cyan
-    Write-Host "Made with ❤️ by @jerapiblaze" -ForegroundColor Cyan
-    # # write color bars to test terminal color support
     Write-Host "|" -NoNewline
-    Write-Host "   " -BackgroundColor Red -NoNewline
-    Write-Host "   " -BackgroundColor Green -NoNewline
-    Write-Host "   " -BackgroundColor Blue -NoNewline
-    Write-Host "   " -BackgroundColor Yellow -NoNewline
-    Write-Host "   " -BackgroundColor Magenta -NoNewline
-    Write-Host "   " -BackgroundColor Cyan -NoNewline
-    Write-Host "   " -BackgroundColor White -NoNewline
-    Write-Host "   " -BackgroundColor DarkGray -NoNewline
-    Write-Host "   " -BackgroundColor Black -NoNewline
+    Write-Host "     " -BackgroundColor Red -NoNewline
+    Write-Host "     " -BackgroundColor Green -NoNewline
+    Write-Host "     " -BackgroundColor Blue -NoNewline
+    Write-Host "     " -BackgroundColor Yellow -NoNewline
+    Write-Host "     " -BackgroundColor Magenta -NoNewline
+    Write-Host "     " -BackgroundColor Cyan -NoNewline
+    Write-Host "     " -BackgroundColor White -NoNewline
+    Write-Host "     " -BackgroundColor DarkGray -NoNewline
+    Write-Host "     " -BackgroundColor Black -NoNewline
     Write-Host "|"
-    Write-Host ""
 }
+
+Write-Host "ttoolbox - Made with ❤️ by @jerapiblaze" -ForegroundColor Cyan
+Write-Host "Dir: $ttoolboxDir - Ver.$Version" -ForegroundColor Cyan
 Write-Host "----"
 
 if ($Help) {
@@ -71,20 +74,20 @@ if ($Help) {
 }
 
 if ($All){
-    $Items = Get-ChildItem -Path "C:\ttoolbox" -Recurse -Include "*.ps1", "*.sh", "*.yaml", "*.md"
+    $Items = Get-ChildItem -Path $ttoolboxDir -Recurse -Include "*.ps1", "*.sh", "*.yaml", "*.md"
 } else {
     $Items = @()
     if ($Docs) {
-        $Items += Get-ChildItem -Path "C:\ttoolbox" -Recurse -Filter "*.md"
+        $Items += Get-ChildItem -Path $ttoolboxDir -Recurse -Filter "*.md"
     }
     if ($Scripts) {
-        $Items += Get-ChildItem -Path "C:\ttoolbox" -Recurse -Filter "*.ps1"
+        $Items += Get-ChildItem -Path $ttoolboxDir -Recurse -Filter "*.ps1"
     } elseif ($AllScripts) {
-        $Items += Get-ChildItem -Path "C:\ttoolbox" -Recurse -Filter "*.ps1"
-        $Items += Get-ChildItem -Path "C:\ttoolbox" -Recurse -Filter "*.sh"
+        $Items += Get-ChildItem -Path $ttoolboxDir -Recurse -Filter "*.ps1"
+        $Items += Get-ChildItem -Path $ttoolboxDir -Recurse -Filter "*.sh"
     }
     if ($Manifests) {
-        $Items += Get-ChildItem -Path "C:\ttoolbox" -Recurse -Filter "*.yaml"
+        $Items += Get-ChildItem -Path $ttoolboxDir -Recurse -Filter "*.yaml"
     }
 }
 
