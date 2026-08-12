@@ -86,7 +86,7 @@ fi
 current_dir=''
 path_dirs=':'"${PATH:-}"':'
 
-find "$root_dir" -type f \( -name '*.ps1' -o -name '*.sh' -o -name '*.yaml' -o -name '*.yml' -o -name '*.md' \) -print0 |
+find "$ttoolbox_dir" -type f \( -name '*.ps1' -o -name '*.sh' -o -name '*.yaml' -o -name '*.yml' -o -name '*.md' \) -print0 |
 	sort -z |
 	while IFS= read -r -d '' item; do
 		name="$(basename "$item")"

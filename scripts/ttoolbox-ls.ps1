@@ -91,6 +91,11 @@ if ($All){
     }
 }
 
+if (-not $All -and -not $Docs -and -not $Scripts -and -not $AllScripts -and -not $Manifests) {
+    Write-Host "No file filters selected. Try --all or --help." -ForegroundColor Yellow
+    return;
+}
+
 $curDirName = ""
 $pathDirs = $env:PATH -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" }
 
