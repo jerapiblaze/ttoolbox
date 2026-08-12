@@ -16,6 +16,7 @@ while getopts "c" opt; do
             ;;
     esac
 done
+git fetch --depth=1 origin
 if [ "$CHECK_ONLY" = true ]; then
     localCommit=$(git rev-parse HEAD)
     remoteCommit=$(git rev-parse origin/main)
@@ -26,4 +27,4 @@ if [ "$CHECK_ONLY" = true ]; then
     fi
     exit 0
 fi
-git fetch --depth=1 origin && git reset --hard origin/main && chmod +rx scripts/*
+git reset --hard origin/main && chmod +rx scripts/*
