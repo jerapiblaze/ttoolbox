@@ -41,6 +41,9 @@ param (
     [switch]$HumanReadable,
 
     [Parameter(Mandatory = $false)]
+    [switch]$Pipeline,
+    
+    [Parameter(Mandatory = $false)]
     [switch]$Help = $false
 )
 
@@ -115,11 +118,19 @@ try {
     Write-Host "Disk Usage Report:" -ForegroundColor Green
     if ($SummaryOnly) {
         $Results = $ItemSizes[0]
-        $Results | Format-Table Path, Size -AutoSize
+        if ($Pipeline) {
+            $Results
+        } else {
+            $Results | Format-Table Path, Size -AutoSize
+        }
     } else {
         $Results = $ItemSizes
         # align size column  at space (xx GB) or (xx MB) or (xx KB) or (xx Bytes)
-        $Results | Format-Table Path, Size -AutoSize
+        if ($Pipeline) {
+            $Results
+        } else {
+            $Results | Format-Table Path, Size -AutoSize
+        }
     }
 
     # Export results if needed
