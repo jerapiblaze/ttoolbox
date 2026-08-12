@@ -8,7 +8,7 @@ if [[ "$virtType" == "none" ]]; then
 fi
 
 echo "This script will perform a fatality on the system. Are you sure you want to continue? (yes/no)"
-read -r answer
+read -r answer < /dev/tty
 if [[ "$answer" != "yes" ]]; then
     echo "Fatality aborted."
     exit 1
