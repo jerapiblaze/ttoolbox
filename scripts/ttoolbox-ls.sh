@@ -33,16 +33,15 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ $shrink -eq 0 ]]; then
-	printf '  _    _                 _  _                  \n'
-	printf ' | |_ | |_  ___    ___  | || |__    ___ __  __ \n'
-	printf ' | __|| __|/ _ \\  / _ \\ | || ''_ \\  / _ \\ \\/ / \n'
-	printf ' | |_ | |_| (_) || (_) || || |_) || (_) |>  <  \n'
-	printf '  \\__| \\__|\\___/  \\___/ |_||_.__/  \\___//_/\\_\\ \n'
+	printf '\033[35m  _    _                 _  _                  \033[0m\n' # Magenta
+	printf '\033[33m | |_ | |_  ___    ___  | || |__    ___ __  __ \033[0m\n' # Yellow
+	printf '\033[31m | __|| __|/ _ \\  / _ \\ | ||  ''_ \\  / _ \\\ \\/ / \033[0m\n' # Red
+	printf '\033[32m | |_ | |_| (_) || (_) || || |_) || (_) |>  <  \033[0m\n' # Green
+	printf '\033[34m  \\__| \\__|\\___/  \\___/ |_||_.__/  \\___//_/\\_\\ \033[0m\n' # Blue
 	printf '                                               \n'
 	printf 'ttoolbox-ls.sh - Version: %s\n' "$version"
-	printf 'Made with @jerapiblaze\n'
+	printf 'Made with <3 by @jerapiblaze\n'
 	printf '|'
-	printf '   '
 	printf '\033[41m   \033[0m'
 	printf '\033[42m   \033[0m'
 	printf '\033[44m   \033[0m'
