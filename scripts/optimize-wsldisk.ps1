@@ -104,6 +104,36 @@ detach vdisk
     $sizeBefore = (Get-Item $wslDiskPath).Length
     $sizeAfter = (Get-Item $wslDiskPath).Length
     Write-Host "Saved $([math]::Round(($sizeBefore - $sizeAfter) / 1MB, 2)) MB for distro $DistroName (before: $([math]::Round($sizeBefore / 1MB, 2)) MB, after: $([math]::Round($sizeAfter / 1MB, 2)) MB)"
+
+    # Check if the distro is Docker. If so, also optimize the docker_data.vhdx file
+    if ($DistroName -eq "docker-desktop") {
+        $dockerDataPath = Join-Path (Split-Path $wslDiskPath -Parent) "docker_data.vhdx"
+        # Read docker config for the actual path of docker_data.vhdx
+        $dockerConfigPath = "$env:appdata\Docker\settings-store.json"
+        $dockerConfig = Get-Content $dockerConfigPath | ConvertFrom-Json
+        if ($dockerConfig.CustomWslDistroDir) {
+            $dockerDataPath = Join-Path $dockerConfig.CustomWslDistroDir "disk\docker_data.vhdx"
+        } else {
+            Write-Host "Could not find custom WSL distro directory in Docker settings. Skip!" -ForegroundColor Yellow
+            return
+        }
+        if (Test-Path $dockerDataPath) {
+            Write-Host "Docker data disk: $dockerDataPath"
+            # Optimize using DiskPart
+            $diskpartScript = @"
+select vdisk file="$dockerDataPath"
+attach vdisk readonly
+compact vdisk
+detach vdisk
+"@
+            $diskpartScript | diskpart > null
+            # Optimize using Optimize-VHD
+            Optimize-VHD -Path $dockerDataPath -Mode Full
+        }
+        $sizeBefore = (Get-Item $dockerDataPath).Length
+        $sizeAfter = (Get-Item $dockerDataPath).Length
+        Write-Host "Saved $([math]::Round(($sizeBefore - $sizeAfter) / 1MB, 2)) MB for distro $DistroName (before: $([math]::Round($sizeBefore / 1MB, 2)) MB, after: $([math]::Round($sizeAfter / 1MB, 2)) MB)"
+    }
 }
 
 # Optimize WSL disk(s)
