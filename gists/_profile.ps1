@@ -1,3 +1,4 @@
+# notepad $profile.CurrentUserAllHosts
 # Exit early for non-interactive hosts to keep startup fast
 if ($Host.Name -notin 'ConsoleHost','Windows Terminal Host','WindowsTerminalHost','Visual Studio Code Host') {
     return
@@ -49,82 +50,15 @@ if (Test-Path (Join-Path $condaRoot 'Scripts\conda.exe')) {
     }
 }
 
-# Function to get shortcut details
-function Get-ShortcutDetails {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$ShortcutPath
-    )
-
-    if (-Not (Test-Path -Path $ShortcutPath)) {
-        Write-Error "The specified shortcut file does not exist: $ShortcutPath"
-        return
-    }
-
-    try {
-        $Shell = New-Object -ComObject WScript.Shell
-        $Shortcut = $Shell.CreateShortcut($ShortcutPath)
-        Write-Output $Shortcut
-    }
-    catch {
-        Write-Error "Failed to retrieve shortcut details: $_"
-    }
-}
-
-# Function to start app
-function Launch-Application {
-    param (
-        [switch]$list = $false,
-        [switch]$verbose = $false
-    )
-
-    if ($null -ne $args[0]) {
-        $appItem = get-StartApps -Name $args[0]
-        $appId = Write-Output $appItem | Select-Object AppID -ExpandProperty AppID
-        $appName = Write-Output $appItem | Select-Object Name -ExpandProperty Name
-
-        if ($verbose) {
-            Write-Output "AppName        : $($appName)"
-            Write-Output "AppId          : $($appID)"
-            Write-Output "LaunchFilePath : shell:AppsFolder\$($appId)"
-            Write-Output "LaunchParams   : $($args[1..$args.Length])"
-        }
-
-        if ($null -eq $appId) {
-            Write-Output "Application not found"
-            return
-        }
-
-        if ($null -eq $args[1]) {
-            Start-Process -FilePath "shell:AppsFolder\$appId"
-        }
-        else {
-            Start-Process -FilePath "shell:AppsFolder\$appId" $args[1..$args.Length]
-        }
-
-        return
-    }
-
-    if ($list) {
-        get-StartApps | Select-Object -ExpandProperty Name
-        return
-    }
-
-    Write-Output "Usage: launch.ps1 ApplicationName|[-list]"
-    Write-Output ''
-    Write-Output '  -list     List all applications found in shell:appsFolder'
-    Write-Output '  -verbose  Verbose logging'
-    Write-Output '  ApplicationName     Launch the application'
-    Write-Output ''
-}
-
 # oh-my-posh prompt initialization
 if (-not [System.Console]::IsOutputRedirected -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
     $themeDir = if ([string]::IsNullOrWhiteSpace($Env:POSH_THEMES_PATH)) { 'C:\Program Files\WindowsApps\ohmyposh.cli_29.14.0.0_x64__96v55e8n804z4\themes' } else { $Env:POSH_THEMES_PATH }
     $themeFile = Join-Path $themeDir 'ys.omp.json'
     if (Test-Path $themeFile) {
         oh-my-posh init pwsh --config $themeFile | Invoke-Expression
-    } else {
-        oh-my-posh init pwsh | Invoke-Expression
+    }
+    else {
+        # oh-my-posh init pwsh | Invoke-Expression
+        oh-my-posh init pwsh --config ys | Invoke-Expression
     }
 }
