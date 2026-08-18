@@ -90,6 +90,8 @@ function Optimize-WSLDisk {
         Write-Host "Dry run mode enabled. No actual optimization will be performed." -ForegroundColor Yellow
         return
     }
+    # Size of the WSL disk before optimization
+    $sizeBefore = (Get-Item $wslDiskPath).Length
     # Optimize using DiskPart
     $diskpartScript = @"
 select vdisk file="$wslDiskPath"
@@ -97,11 +99,10 @@ attach vdisk readonly
 compact vdisk
 detach vdisk
 "@
-    $diskpartScript | diskpart > null
+    $diskpartScript | diskpart > $null
     # Optimize using Optimize-VHD
     Optimize-VHD -Path $wslDiskPath -Mode Full
-    # Size of the WSL disk before optimization
-    $sizeBefore = (Get-Item $wslDiskPath).Length
+    # Size of the WSL disk after optimization
     $sizeAfter = (Get-Item $wslDiskPath).Length
     Write-Host "Saved $([math]::Round(($sizeBefore - $sizeAfter) / 1MB, 2)) MB for distro $DistroName (before: $([math]::Round($sizeBefore / 1MB, 2)) MB, after: $([math]::Round($sizeAfter / 1MB, 2)) MB)"
 
@@ -119,6 +120,7 @@ detach vdisk
         }
         if (Test-Path $dockerDataPath) {
             Write-Host "Docker data disk: $dockerDataPath"
+            $sizeBefore = (Get-Item $dockerDataPath).Length
             # Optimize using DiskPart
             $diskpartScript = @"
 select vdisk file="$dockerDataPath"
@@ -126,11 +128,10 @@ attach vdisk readonly
 compact vdisk
 detach vdisk
 "@
-            $diskpartScript | diskpart > null
+            $diskpartScript | diskpart > $null
             # Optimize using Optimize-VHD
             Optimize-VHD -Path $dockerDataPath -Mode Full
         }
-        $sizeBefore = (Get-Item $dockerDataPath).Length
         $sizeAfter = (Get-Item $dockerDataPath).Length
         Write-Host "Saved $([math]::Round(($sizeBefore - $sizeAfter) / 1MB, 2)) MB for distro $DistroName (before: $([math]::Round($sizeBefore / 1MB, 2)) MB, after: $([math]::Round($sizeAfter / 1MB, 2)) MB)"
     }
