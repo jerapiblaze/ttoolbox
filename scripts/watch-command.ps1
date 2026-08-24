@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+    Continuously executes a command and displays its output.
+
+.PARAMETER Command
+    The command to execute.
+
+.PARAMETER Interval
+    The interval in seconds between command executions. Default is 2.
+
+.PARAMETER MaxLines
+    The maximum number of lines to display. Default is -1 (no limit).
+
+.PARAMETER Tail
+    If specified, shows the last $MaxLines lines of output. Default is $false.
+#>
 param (
     [Parameter(Mandatory=$false)]
     [string]$Command = "",
