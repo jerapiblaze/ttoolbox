@@ -2,6 +2,37 @@
 #!/usr/bin/zsh
 #!/usr/bin/sh
 
+# Parameter -n specifies the number of iterations for the GPU monitoring tools. Default is 1.
+NumIterations=1
+Delay=2
+# Get parameter from args
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -n)
+            NumIterations="$2"
+            shift 2
+            ;;
+        -d)
+            Delay="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown argument: $1"
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$NumIterations" -lt 0 ]; then
+    echo "Number of iterations must be positive"
+    exit 1
+fi
+
+if [ "$Delay" -le 0 ]; then
+    echo "Delay must be greater than 0"
+    exit 1
+fi
+
 # Script to get GPU usage information from all vendors (Intel, AMD, NVIDIA)
 
 # Check if there is intel/amd/nvidia GPU and set the appropriate monitoring command
@@ -25,22 +56,28 @@ function run_once {
     fi
 }
 
-# Parameter -n specifies the number of iterations for the GPU monitoring tools. Default is 1.
-NumIterations=1
-# Get parameter from args
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        -n)
-            NumIterations="$2"
-            shift 2
-            ;;
-        *)
-            echo "Unknown argument: $1"
-            exit 1
-            ;;
-    esac
-done
+if [ "$NumIterations" -eq 1 ]; then
+    echo "GPU Top: $(hostname) @ $(date)"
+    run_once
+    exit 0
+fi
+
+if [ "$NumIterations" -lt 1 ]; then
+    i=0
+    while true; do
+        i=$((i+1))
+        clear;
+        echo "GPU Top: $(hostname) @ $(date) (every $Delay seconds, iter $i)"
+        run_once;
+        sleep "$Delay"
+    done
+    exit 0
+fi
 
 for ((i=0; i<NumIterations; i++)); do
-    run_once
+    clear;
+    echo "GPU Top: $(hostname) @ $(date) (every $Delay seconds, iter $((i+1))/$NumIterations)"
+    run_once;
+    sleep "$Delay"
 done
+exit 0
