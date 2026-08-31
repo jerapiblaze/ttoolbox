@@ -44,6 +44,14 @@ INTEL_GPU_TOP_AVAILABLE=$(command -v intel_gpu_top)
 AMDGPU_TOP_AVAILABLE=$(command -v amdgpu_top)
 NVIDIA_SMI_AVAILABLE=$(command -v nvidia-smi)
 
+# If intel/amd gpu top, require sudo
+if [ -n "$INTEL_AVAILABLE" ] && [ -n "$INTEL_GPU_TOP_AVAILABLE" ]; then
+    sudo true
+fi
+if [ -n "$AMD_AVAILABLE" ] && [ -n "$AMDGPU_TOP_AVAILABLE" ]; then
+    sudo true
+fi
+
 function run_once {
     if [ -n "$INTEL_AVAILABLE" ] && [ -n "$INTEL_GPU_TOP_AVAILABLE" ]; then
         sudo intel_gpu_top -n 1
