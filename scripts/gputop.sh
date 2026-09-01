@@ -53,15 +53,20 @@ if [ -n "$AMD_AVAILABLE" ] && [ -n "$AMDGPU_TOP_AVAILABLE" ]; then
 fi
 
 function run_once {
+    output=""
     if [ -n "$INTEL_AVAILABLE" ] && [ -n "$INTEL_GPU_TOP_AVAILABLE" ]; then
-        sudo intel_gpu_top -n 1
-    elif [ -n "$AMD_AVAILABLE" ] && [ -n "$AMDGPU_TOP_AVAILABLE" ]; then
-        sudo amdgpu_top -J -l 1
-    elif [ -n "$NVIDIA_AVAILABLE" ] && [ -n "$NVIDIA_SMI_AVAILABLE" ]; then
-        nvidia-smi
-    else
-        echo "No supported GPU monitoring tool available"
+        output+=$(sudo intel_gpu_top -n 1)
     fi
+    if [ -n "$AMD_AVAILABLE" ] && [ -n "$AMDGPU_TOP_AVAILABLE" ]; then
+        output+=$(sudo amdgpu_top -J -l 1)
+    fi
+    if [ -n "$NVIDIA_AVAILABLE" ] && [ -n "$NVIDIA_SMI_AVAILABLE" ]; then
+        output+=$(nvidia-smi)
+    fi
+    if [ -z "$output" ]; then
+        output="No supported GPU monitoring tool available"
+    fi
+    echo "$output"
 }
 
 if [ "$NumIterations" -eq 1 ]; then
