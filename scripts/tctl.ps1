@@ -25,6 +25,8 @@ param (
     [Parameter(Mandatory = $false)]
     [int]$Time = 0,
     [Parameter(Mandatory = $false)]
+    [switch]$NoModernSleep,
+    [Parameter(Mandatory = $false)]
     [switch]$Help
 )
 
@@ -90,7 +92,11 @@ function Set-SleepMode {
     }
     awakectl -Action stop;
     Start-SleepPrompt 60 "Delaying to provide G-Helper time to start. Hit anykey to skip waiting." -AllowInterrupt
-    psshutdown -x -t 0;
+    if ($NoModernSleep){
+        psshutdown -d -t 0;
+    } else {
+        psshutdown -x -t 0;
+    }
 }
 
 function Set-AwakeMode {
@@ -103,7 +109,7 @@ function Set-AwakeMode {
 }
 
 function Set-MoveMode {
-    psshutdown -d -t 0;
+    psshutdown -h -t 0;
 }
 
 try {

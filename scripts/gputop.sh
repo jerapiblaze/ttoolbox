@@ -56,6 +56,7 @@ function run_once {
     output=""
     if [ -n "$INTEL_AVAILABLE" ] && [ -n "$INTEL_GPU_TOP_AVAILABLE" ]; then
         output+=$(sudo intel_gpu_top -n 1)
+        wait
     fi
     if [ -n "$AMD_AVAILABLE" ] && [ -n "$AMDGPU_TOP_AVAILABLE" ]; then
         output+=$(sudo amdgpu_top -J -l 1)

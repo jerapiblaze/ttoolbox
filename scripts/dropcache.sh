@@ -19,8 +19,14 @@ function drop_cache(){
 
 function drop_swap(){
     sudo sh -c "echo Dropping Swap"
-    sudo sh -c "swapoff -a"
-    sudo sh -c "swapon -a"
+    if swapon --show | grep -q '/dev/zram'; then
+        sudo swapoff -a
+        sudo systemctl restart zram-config
+        sudo swapon -a
+    else
+        sudo swapoff -a
+        sudo swapon -a
+    fi
 }
 
 function main(){
