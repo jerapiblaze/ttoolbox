@@ -6,7 +6,7 @@ services:
     ports:
       - 8800:8080
     networks:
-      - ansagpt
+      - chatlocalgpt
     restart: unless-stopped
     volumes:
       - ./data/openwebui-data:/app/backend/data
