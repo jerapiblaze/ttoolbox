@@ -10,6 +10,8 @@ cd /root/chatlocalgpt
 mkdir data
 # if NVIDIA GPU is available
 docker compose -f chatlocalgpt.nvidia.compose.yaml up -d
+# or if running on NVIDIA Jetson kits
+docker compose -f chatlocalgpt.nvidia.jetson.compose.yaml up -d
 # else, use iGPU with vulkan
 docker compose -f chatlocalgpt.vulkan.compose.yaml up -d
 ```
