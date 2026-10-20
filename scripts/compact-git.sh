@@ -12,7 +12,7 @@ git count-objects -vH
 echo ">>> Expiring reflog and running garbage collection..."
 git reflog expire --expire=now --all
 git gc --prune=now
-echo ">>> Git repository compacted."
 echo ">>> Current Git repository size after compaction:"
 git count-objects -vH
+echo ">>> Git repository compacted."
 echo ">>> Hint: You can further compact by running 'git gc --aggressive' (very slow but thorough, may take a very long time)"
